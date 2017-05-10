@@ -39,11 +39,14 @@ $app
 	)
 	->post(
 		'/users/{id}/update', function(ServerRequestInterface $request) use ($app){
-			$id = $request->getAttribute('id');
-			$data = $request->getParsedBody();	
-			$repository = $app->service('user.repository');		
-			$repository->update($id, $data);
-			return $app->route('users.list');
+			$repository = $app->service('user.repository');
+            $id = $request->getAttribute('id');
+            $data = $request->getParsedBody();
+            if (isset($data['password'])) {
+                unset($data['password']);
+            }
+            $repository->update($id, $data);
+            return $app->route('users.list');
 		}, 'users.update'
 	)
 	->get(
