@@ -21,9 +21,11 @@ $app
 	->post(
 		'/users/store', function(ServerRequestInterface $request) use ($app){
 			$data = $request->getParsedBody();
-			$repository = $app->service('user.repository');
-			$repository->create($data);
-			return $app->route('users.list');
+            $repository = $app->service('user.repository');
+            $auth = $app->service('auth');
+            $data['password'] = $auth->hashPassword($data['password']);
+            $repository->create($data);
+            return $app->route('users.list');
 		}, 'users.store'
 	)
 	->get(
